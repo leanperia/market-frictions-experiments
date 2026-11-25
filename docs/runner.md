@@ -112,6 +112,16 @@ python tools/check_parity.py --data-root DATA --reference-root REFERENCE_RUNS \
     --output-root runs/parity --workers 4 [--rl-checkpoint-seeds 1]
 ```
 
+### Results of the parity check
+
+On 25 November 2026 the repository at the tag `cifer-2027-camera-ready` was
+cloned fresh on a compute node of the original cluster (AMD EPYC 7513), with a
+new environment installed from `requirements.txt` only and no environment
+variables set. All 76 deterministic cells reproduced the study's `summary.json`
+exactly (29 of 29 metrics each), and all 672 RL cells had the study's
+effective configuration. The input panels matched the SHA-256 fingerprints in
+`configs/tuned_stage1/`.
+
 ### Floating-point results depend on the CPU
 
 The reference results were computed on AMD EPYC 7513 processors, which have
