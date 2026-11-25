@@ -1,6 +1,6 @@
 # RL runtime used for the CIFEr 2027 experiments (Python 3.10.20).
 # Needed for meta/policies/eiie_extractor.py and for the RL runner
-# (the runner is not released yet; see README "Roadmap").
+# (tools/rl.py, used by tools/run_cell.py for RL cells).
 -r requirements.txt
 torch==2.12.0
 stable-baselines3==2.8.0

@@ -12,12 +12,11 @@ PPO-EIIE, SAC, TD3) with eight passive, risk-model, signal-based and momentum
 strategies in a U.S. and a Philippine Stock Exchange (PSE) proxy, under a ladder
 of four modelled execution scenarios (F0–F3).
 
-> **Status: initial release (November 2026).** This repository contains the
-> execution model, the portfolio environment, the non-RL strategies, the metrics,
-> all experiment configurations and the complete RL hyperparameters. The
-> experiment runner and the statistical-inference code will follow (see
-> [Roadmap](#roadmap)). Licensed market data are not included (see
-> [docs/data.md](docs/data.md)).
+> **Status (November 2026).** This repository contains the execution model, the
+> portfolio environment, the non-RL strategies, the metrics, all experiment
+> configurations, the complete RL hyperparameters and the experiment runner. The
+> statistical-inference code will follow (see [Roadmap](#roadmap)). Licensed
+> market data are not included (see [docs/data.md](docs/data.md)).
 
 ## Contents
 
@@ -29,6 +28,9 @@ of four modelled execution scenarios (F0–F3).
 | `meta/policies/` | Non-RL strategies (UBAH, UCRP, Markowitz, HRP, ERC, Z-score, MACD, CSM-LO) and the EIIE feature extractor |
 | `meta/data_adapters/` | Loader from long-format panel CSVs to the environment |
 | `tools/portfolio_metrics.py`, `tools/rf_series.py` | Performance metrics and risk-free alignment |
+| `tools/run_cell.py`, `tools/run_grid.py` | Experiment runner: one cell, or a grid on one computer ([docs/runner.md](docs/runner.md)) |
+| `tools/check_parity.py` | Comparison of runner results with the original result files of the paper |
+| `manifests/cifer2027.yaml` | The 748 cells of the paper |
 | `tools/synthetic_friction_example.py` | Self-contained example on invented data |
 | `configs/friction/` | The F0–F3 friction ladder for each market |
 | `configs/algo/`, `configs/tuned_stage1/` | Base algorithm settings and the selected RL configurations with tuning provenance |
@@ -65,18 +67,48 @@ The synthetic example runs the friction-aware environment on invented prices
 (`--market pse` or `--market nyse`) and prints, for each step, the intended and
 realised weights, the costs, the blocked quantities and the final equity.
 
-For the RL components (`meta/policies/eiie_extractor.py` and, later, the runner):
+For the RL components (`meta/policies/eiie_extractor.py` and the RL cells of the
+runner):
 
 ```bash
 pip install -r requirements-rl.txt
 ```
 
+### Running the experiments
+
+You need panels built from data that you are licensed to use
+([docs/data.md](docs/data.md)). Put them in one directory with the layout of
+`configs/base/*.yaml` (the `data/` prefix of those paths is replaced by
+`--data-root`). Then:
+
+```bash
+# one cell = (market, strategy, friction level, seed) -> one result directory
+python tools/run_cell.py --data-root /path/to/data --market pse --strategy ucrp --friction F3 --seed 1
+
+# the deterministic part of the paper (76 cells), 4 at a time
+python tools/run_grid.py --data-root /path/to/data --group non_rl cadence_control signal_tuned --workers 4
+
+# the RL cells (672 cells; each trains a new policy for 300,000 steps)
+python tools/run_grid.py --data-root /path/to/data --group rl --workers 4 --threads-per-cell 2
+```
+
+Results go to `runs/cells/` (ignored by git). Cells with a result are skipped.
+See [docs/runner.md](docs/runner.md) for the options, the result files and how
+to use a cluster scheduler (map the array index to `--index`).
+
+What is verified (with the original data, see [docs/runner.md](docs/runner.md)):
+all 76 deterministic cells of the paper reproduce bit for bit, the configuration
+of all 672 RL cells is identical, 27 saved RL models of the study give bit-identical
+test results, and one complete RL training (PPO-MLP, PSE, F3, seed 1) reproduced
+the study's model byte for byte. Bit-identical results need the same CPU
+kernels and thread counts as the study; on a CPU with AVX-512, Markowitz and ERC
+differ by about 1e-3 in Sharpe ratio unless you select the AVX2 kernels
+(docs/runner.md). The other 671 RL trainings were not repeated.
+
 ## Roadmap
 
-1. **Experiment runner.** One command runs one experiment cell (configuration,
-   market, friction level, seed) and writes one result directory. A manifest
-   lists the full grid. A local runner executes the grid on one computer. A
-   cluster scheduler is an optional adapter only; no scheduler is needed.
+1. **Experiment runner.** Done: `tools/run_cell.py`, `tools/run_grid.py` and
+   `manifests/cifer2027.yaml` ([docs/runner.md](docs/runner.md)).
 2. **Statistical inference.** Hierarchical paired stationary bootstrap with Holm
    correction, the simulation study of family-wise error and detection rates,
    and the table and figure builders.
