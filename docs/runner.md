@@ -8,6 +8,9 @@ The runner has three commands. None of them needs a cluster or a scheduler.
 | `tools/run_grid.py` | Run many cells of a manifest on one computer |
 | `tools/check_parity.py` | Compare results with the reference results of the paper (needs the original result files) |
 
+The statistical inference on the cell results is described in
+[inference.md](inference.md).
+
 ## Cells and the manifest
 
 A cell is one combination of market, strategy, friction level and seed.

@@ -14,9 +14,10 @@ of four modelled execution scenarios (F0–F3).
 
 > **Status (November 2026).** This repository contains the execution model, the
 > portfolio environment, the non-RL strategies, the metrics, all experiment
-> configurations, the complete RL hyperparameters and the experiment runner. The
-> statistical-inference code will follow (see [Roadmap](#roadmap)). Licensed
-> market data are not included (see [docs/data.md](docs/data.md)).
+> configurations, the complete RL hyperparameters, the experiment runner and the
+> statistical inference. The simulation study and the table and figure builders
+> will follow (see [Roadmap](#roadmap)). Licensed market data are not included
+> (see [docs/data.md](docs/data.md)).
 
 ## Contents
 
@@ -30,6 +31,8 @@ of four modelled execution scenarios (F0–F3).
 | `tools/portfolio_metrics.py`, `tools/rf_series.py` | Performance metrics and risk-free alignment |
 | `tools/run_cell.py`, `tools/run_grid.py` | Experiment runner: one cell, or a grid on one computer ([docs/runner.md](docs/runner.md)) |
 | `tools/check_parity.py` | Comparison of runner results with the original result files of the paper |
+| `tools/inference.py`, `tools/run_inference.py` | Hierarchical paired bootstrap, Holm correction and the paper's contrast families ([docs/inference.md](docs/inference.md)) |
+| `tools/check_inference_parity.py` | Comparison of the inference results with the original result files of the paper |
 | `manifests/cifer2027.yaml` | The 748 cells of the paper |
 | `tools/synthetic_friction_example.py` | Self-contained example on invented data |
 | `configs/friction/` | The F0–F3 friction ladder for each market |
@@ -96,6 +99,17 @@ Results go to `runs/cells/` (ignored by git). Cells with a result are skipped.
 See [docs/runner.md](docs/runner.md) for the options, the result files and how
 to use a cluster scheduler (map the array index to `--index`).
 
+The statistical inference uses the F3 cells (deterministic cells and RL seeds
+1–21):
+
+```bash
+python tools/run_inference.py --data-root /path/to/data --cell-root runs/cells --workers 4
+```
+
+It writes the contrast tables of the paper (primary 32 contrasts per market,
+the cadence control and the post hoc signal-tuning family) to
+`runs/inference/` ([docs/inference.md](docs/inference.md)).
+
 What is verified (with the original data, see [docs/runner.md](docs/runner.md)):
 all 76 deterministic cells of the paper reproduce bit for bit, the configuration
 of all 672 RL cells is identical, 27 saved RL models of the study give bit-identical
@@ -103,15 +117,23 @@ test results, and one complete RL training (PPO-MLP, PSE, F3, seed 1) reproduced
 the study's model byte for byte. Bit-identical results need the same CPU
 kernels and thread counts as the study; on a CPU with AVX-512, Markowitz and ERC
 differ by about 1e-3 in Sharpe ratio unless you select the AVX2 kernels
-(docs/runner.md). The other 671 RL trainings were not repeated.
+(docs/runner.md). The other 671 RL trainings were not repeated. The inference
+code reproduces all 20 inference result files of the paper byte for byte (all
+p-values and Holm decisions of the primary, signal-tuning and dividend
+families) from the study's daily portfolio values; of these inputs, the runner
+regenerated the 22 deterministic F3 cells and 6 of the 168 F3 RL cells
+(from saved models), all byte-identical ([docs/inference.md](docs/inference.md)).
 
 ## Roadmap
 
 1. **Experiment runner.** Done: `tools/run_cell.py`, `tools/run_grid.py` and
    `manifests/cifer2027.yaml` ([docs/runner.md](docs/runner.md)).
-2. **Statistical inference.** Hierarchical paired stationary bootstrap with Holm
-   correction, the simulation study of family-wise error and detection rates,
-   and the table and figure builders.
+2. **Statistical inference.** Done: hierarchical paired stationary bootstrap
+   with Holm correction and the paper's contrast families
+   (`tools/run_inference.py`, [docs/inference.md](docs/inference.md)). Still to
+   come: the runner cells of the three dividend-inclusive risk models (the
+   inference of that family is ready), the simulation study of family-wise
+   error and detection rates, and the table and figure builders.
 3. **Data preparation.** Instructions to build the panels from your own licensed
    data, checked against the fingerprints in `configs/tuned_stage1/`.
 4. **`market-frictions` library.** The execution model will move to a separate,
