@@ -1,0 +1,22 @@
+# F2 (NYSE): F1 + ADV-20 participation cap + square-root impact.
+# Generic layer names still resolve through the NYSE market profile.
+friction:
+  level: F2
+  cost_buffer_pct: 0.003
+  impact_model:
+    name: sqrt
+    Y: 0.6
+    perm_fraction: 0.25
+  max_trade_volume_pct: 1.0    # ADV-cap layer enforces the real cap
+  layers:
+    - name: execution_timing
+    - name: adv_cap
+      params:
+        max_pov: 0.10
+    - name: fees
+      params:
+        commission_bps: 0.0
+    - name: spread
+      params:
+        spread_floor: 0.0005
+        flat_spread: 0.0004

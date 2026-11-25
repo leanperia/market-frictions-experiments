@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "market-frictions-experiments"
+type: software
+license: MIT
+repository-code: "https://github.com/leanperia/market-frictions-experiments"
+authors:
+  - family-names: Peria
+    given-names: Lean Louiel
+preferred-citation:
+  type: conference-paper
+  title: "Evaluating Reinforcement Learning Portfolio Strategies Under Modeled Market Frictions: U.S. and Philippine Evidence"
+  authors:
+    - family-names: Peria
+      given-names: Lean Louiel
+    - family-names: Crisostomo
+      given-names: John Carlo
+    - family-names: Valdez
+      given-names: Adrian Roy
+  collection-title: "Proceedings of the 2027 IEEE Symposium Series on Computational Intelligence (SSCI), IEEE Symposium on Computational Intelligence for Financial Engineering and Economics (CIFEr)"
+  publisher:
+    name: IEEE
+  year: 2027

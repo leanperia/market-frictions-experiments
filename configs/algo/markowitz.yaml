@@ -1,0 +1,5 @@
+algo:
+  name: markowitz
+  kind: non_rl
+  params:
+    lookback: 252

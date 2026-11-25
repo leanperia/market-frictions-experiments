@@ -1,0 +1,6 @@
+algo:
+  name: erc
+  kind: non_rl
+  params:
+    lookback: 252
+    ridge: 1.0e-4

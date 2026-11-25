@@ -1,0 +1,13 @@
+name: pse_adjusted_pseedge
+market: pse
+data:
+  accounting_model: option1_crsp
+  train_csv: data/pse_top30_advt_candidate_2008_2025_adj_pseedge/train.csv
+  valid_csv: data/pse_top30_advt_candidate_2008_2025_adj_pseedge/valid.csv
+  test_csv:  data/pse_top30_advt_candidate_2008_2025_adj_pseedge/test.csv
+  rf_csv: data/risk_free_rates/bsp_overnight_rrp_rate.csv
+  rf_type: step_function
+  benchmark_csv: data/benchmarks/pse30_equal_weight_adjusted_close.csv
+environment:
+  initial_amount: 5500000
+  reward_scaling: 1.0

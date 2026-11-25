@@ -1,0 +1,13 @@
+name: nyse_adjusted
+market: nyse
+data:
+  accounting_model: option1_crsp
+  train_csv: data/nyse_ohlc_aligned30_2008_2025_adj/train.csv
+  valid_csv: data/nyse_ohlc_aligned30_2008_2025_adj/valid.csv
+  test_csv:  data/nyse_ohlc_aligned30_2008_2025_adj/test.csv
+  rf_csv: data/risk_free_rates/fred_dtb3.csv
+  rf_type: daily
+  benchmark_csv: data/benchmarks/spy_adjusted_close.csv
+environment:
+  initial_amount: 100000
+  reward_scaling: 1.0

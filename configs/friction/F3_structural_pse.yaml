@@ -1,0 +1,41 @@
+# F3 (PSE): F2-PSE + board lots + T+2 settlement.
+# ``fees`` and ``board_lots`` are PSE market-profile adapters, keeping
+# country-specific rules out of the canonical env and shared registry.
+friction:
+  level: F3
+  cost_buffer_pct: 0.007
+  impact_model:
+    name: sqrt
+    Y: 0.6
+    perm_fraction: 0.25
+  max_trade_volume_pct: 1.0
+  # Layer order is meaningful (the pipeline calls before_trade and
+  # after_trade in the same layer order):
+  #
+  #   * board_lots.before_trade rounds to legal increments — must run
+  #     AFTER settlement.before_trade (which scales buys to settled cash
+  #     and can produce fractional share counts). Bug #2 in env audit.
+  #
+  #   * settlement.after_trade queues the NET sell proceeds (gross minus
+  #     sell-side fees+spread). For "sell_side_costs" to be in the
+  #     diagnostics when settlement reads it, fees.after_trade and
+  #     spread.after_trade must run EARLIER in the layer list. Bug #3.
+  #
+  # Combined: [..., fees, spread, settlement, board_lots]
+  layers:
+    - name: execution_timing
+    - name: adv_cap
+      params:
+        max_pov: 0.10
+    - name: fees
+      params:
+        commission_bps: 25.0
+        cmepa_effective_date: "2025-07-01"
+    - name: spread
+      params:
+        spread_floor: 0.0010
+        flat_spread: 0.0012
+    - name: settlement
+      params:
+        cycle_days: 2
+    - name: board_lots

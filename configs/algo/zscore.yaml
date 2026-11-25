@@ -1,0 +1,6 @@
+algo:
+  name: zscore
+  kind: non_rl
+  params:
+    lookback: 60
+    threshold: 1.0

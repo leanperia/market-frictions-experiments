@@ -1,0 +1,11 @@
+# F0: bare environment — flat commission only, no liquidity / structural / operational layers.
+# Mirrors the runbook's legacy 10 bps commission, but executed inside the MACE env via
+# BaselineImpactModel so this run is the F0 sanity check that anchors all higher-friction levels.
+friction:
+  level: F0
+  cost_buffer_pct: 0.002
+  impact_model:
+    name: baseline
+    basis_points: 10
+  max_trade_volume_pct: 1.0   # effectively unconstrained for F0
+  layers: []                  # no friction-pipeline layers active

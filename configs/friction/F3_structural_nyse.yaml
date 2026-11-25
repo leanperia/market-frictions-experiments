@@ -1,0 +1,29 @@
+# F3 (NYSE): F2 + settlement (T+2 → T+1 on 2024-05-28).
+# ``fees`` still resolves through the NYSE market profile; the env only sees a
+# generic friction stack plus the shared impact-model family.
+friction:
+  level: F3
+  cost_buffer_pct: 0.003   # NYSE fees are tiny; small buffer for spread+impact
+  impact_model:
+    name: sqrt
+    Y: 0.6
+    perm_fraction: 0.25
+  max_trade_volume_pct: 1.0
+  # Layer order: settlement.after_trade must run AFTER fees+spread so it
+  # can queue NET sell proceeds (bug #3 in env audit).
+  layers:
+    - name: execution_timing
+    - name: adv_cap
+      params:
+        max_pov: 0.10
+    - name: fees
+      params:
+        commission_bps: 0.0
+    - name: spread
+      params:
+        spread_floor: 0.0005
+        flat_spread: 0.0004
+    - name: settlement
+      params:
+        cycle_days: 2
+        t1_effective_date: "2024-05-28"

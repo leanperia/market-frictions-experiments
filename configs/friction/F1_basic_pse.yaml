@@ -1,0 +1,22 @@
+# F1 (PSE): + market-profile fees, spread haircut, next-day execution.
+# ``fees`` resolves through the PSE market profile, which carries the CMEPA
+# switch and keeps country-specific fee rules out of the canonical env.
+friction:
+  level: F1
+  # PSE fees+VAT+SCCP+PSE-tx+STT can total ~80bps on sells (pre-CMEPA).  A 0.5%
+  # buffer reserves equity for those costs so buys don't drive cash negative.
+  cost_buffer_pct: 0.005
+  impact_model:
+    name: baseline
+    basis_points: 0
+  max_trade_volume_pct: 1.0
+  layers:
+    - name: execution_timing
+    - name: fees
+      params:
+        commission_bps: 25.0
+        cmepa_effective_date: "2025-07-01"
+    - name: spread
+      params:
+        spread_floor: 0.0010
+        flat_spread: 0.0012

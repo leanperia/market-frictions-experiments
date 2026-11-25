@@ -1,0 +1,24 @@
+# F2 (PSE): F1-PSE + ADV-20 cap + square-root impact.
+# ``fees`` stays generic here; the PSE market profile supplies the concrete
+# fee adapter and keeps the friction config portable across markets.
+friction:
+  level: F2
+  cost_buffer_pct: 0.005
+  impact_model:
+    name: sqrt
+    Y: 0.6
+    perm_fraction: 0.25
+  max_trade_volume_pct: 1.0
+  layers:
+    - name: execution_timing
+    - name: adv_cap
+      params:
+        max_pov: 0.10
+    - name: fees
+      params:
+        commission_bps: 25.0
+        cmepa_effective_date: "2025-07-01"
+    - name: spread
+      params:
+        spread_floor: 0.0010
+        flat_spread: 0.0012

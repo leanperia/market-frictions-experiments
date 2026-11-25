@@ -1,0 +1,6 @@
+algo:
+  name: csm_lo
+  kind: non_rl
+  params:
+    top_n: 10
+    min_eligible: 10

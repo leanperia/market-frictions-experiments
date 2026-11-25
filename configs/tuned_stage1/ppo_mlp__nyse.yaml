@@ -1,0 +1,136 @@
+algo:
+  model_kwargs:
+    batch_size: 256
+    clip_range: 0.353708787013135
+    ent_coef: 0.08826732856440268
+    gae_lambda: 0.8116117094777343
+    gamma: 0.9403087613322303
+    learning_rate: 0.0003252871982774678
+    n_epochs: 10
+    n_steps: 1024
+environment:
+  reward_scaling: 0.1279391103706916
+tuning_provenance:
+  algo: ppo_mlp
+  base_config: configs/base/nyse_adjusted.yaml
+  base_seed: 42
+  build_manifest_sha256:
+    data/nyse_ohlc_aligned30_2008_2025_adj/_build_manifest.json: cca441d2f579d0e72c921270a37a8cb58faad725ec765baa18794b152a3e0ebb
+  config_sha256:
+    configs/algo/ppo_mlp.yaml: f8003c9454112ddcce835396cdb2837136d982d55058f0c7d08c56493281a3d7
+    configs/base/nyse_adjusted.yaml: aac01b2e510e4a86e9bdfd7ea849c3b4cf38787db47b449822926f3644961bb6
+    configs/friction/F3_structural_nyse.yaml: 8630ce5b632759a1fbf33f8d8c9f7b26c3bb0a2c108ee8142a3645651c328a81
+  data_sha256:
+    data/nyse_ohlc_aligned30_2008_2025_adj/train.csv: 1805e719befb4f5ebeff7e78ac8ffee1b2d15dd71985cd43a1a88b848971c5bf
+    data/nyse_ohlc_aligned30_2008_2025_adj/valid.csv: baaa8034ac7a0b047fa07031ccf8abb3a441439d52966508f3908c395c986be0
+    data/risk_free_rates/fred_dtb3.csv: 664076f3dbfeab8ecc30305e6ed47147f2225ada15814e7e5068ccce807d90d7
+  device: cpu
+  effective_study_seed: 401850618
+  epoch_timesteps: 20000
+  evaluation_seeds:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  launch_eligible: true
+  launch_validation_errors: []
+  manifest_path: runs/experiments/stage1_calibration/2026-08-cifer-eval/ppo_mlp__nyse/tuning_manifest.json
+  market: nyse
+  n_checkpoints: 5
+  n_seeds_per_trial: 3
+  n_trials_attempted: 20
+  n_trials_completed: 20
+  n_trials_failed: 0
+  n_trials_nonterminal: 0
+  n_trials_pruned: 0
+  objective: max_common_checkpoint_cross_seed_median
+  objective_checkpoint_timesteps: 100000
+  objective_checkpoint_timesteps_nominal: 100000
+  objective_metric: median3_sharpe_ratio_rf
+  per_seed_checkpoint_actual_timesteps:
+  - - 20480.0
+    - 40960.0
+    - 61440.0
+    - 81920.0
+    - 102400.0
+  - - 20480.0
+    - 40960.0
+    - 61440.0
+    - 81920.0
+    - 102400.0
+  - - 20480.0
+    - 40960.0
+    - 61440.0
+    - 81920.0
+    - 102400.0
+  per_seed_checkpoint_values_persisted: true
+  protocol_id: adr-0007-k3-f3-common-checkpoint-median-v1
+  release_commit: 70962faad738afbdcb124cdb35ba79be03ccff5a
+  sampler: TPESampler
+  sampler_seed_scheme: sha256-study-seed-trial-number-stream-v1
+  selected_checkpoint: 4
+  selected_checkpoint_actual_timesteps:
+  - 102400.0
+  - 102400.0
+  - 102400.0
+  software_versions:
+    gymnasium: 1.2.3
+    numpy: 2.2.6
+    optuna: 4.8.0
+    pandas: 2.2.3
+    python: 3.10.20
+    stable-baselines3: 2.8.0
+    torch: 2.12.0
+  source_sha256:
+    meta/data_adapters/local_panel.py: 54c8fd8a77d6ef874635ed6c6e20b5fc3d40f7050d37e7986fc99c6f94aa9d55
+    meta/env_market_impact/envs/env_portfolio_optimization_impact.py: 49db8e575e0aed691f94d9d57c2229815075d46fdabd45b06a189dac29d9f4ab
+    meta/env_market_impact/envs/impact_models.py: 02a4011b0c2ff456b1c8211ea9f5a3d0b8c4f751ab778fc87c686ac15583bb69
+    meta/frictions/__init__.py: 15748728369e234458adcf7e8d50e48f3f56b859de787111dd6c0957e4a91aa0
+    meta/frictions/adv_cap.py: 840b004a942d67bbb61c9183bb1453271b3bbeeb7971319af42587140acab22c
+    meta/frictions/board_lots.py: c17a98d680eef136c01611bb849d95f98de47082e80acaf72dcf0e7610b750bf
+    meta/frictions/diagnostics.py: faf1094dd4968fa49477f793779114a2a9ae345c116b9c48434fc61f1a5578a9
+    meta/frictions/execution_timing.py: 74c51a7d22fb4a79846ee8a2d504d93e826b065a421b2daf46d9b7fb5db7ecb9
+    meta/frictions/fees.py: fe3cce89123d3ff94a8ffa592366144e955a05fa8a496e4d0262b70600b75b7f
+    meta/frictions/impact.py: 152ef5b460702d8656caca302c6b29081a2c91c6bcf3032620da69614297dc94
+    meta/frictions/markets/__init__.py: 9072c3bb4f8d06e78d8d26028fa98894894c6944dbc137f5d1fd4be3992f51ae
+    meta/frictions/markets/nyse.py: 270ce7e248838c56a9b2db73db37434c9ff96a1b9aae36ab1f32f801c97e6e6c
+    meta/frictions/markets/pse.py: 187777b00cfb54b492df1b2952de1fef3979653c384075801cf407d569ff6d2e
+    meta/frictions/outages.py: ac2f5707d3bb0aa30d62a03d0cd73fa422aa178ab44f48c02018d1bbb47fa8b3
+    meta/frictions/pipeline.py: 94b7d8de9b8dfe89fda5a7ba63cadfa70991cc7232e9897919d5168caa4b9393
+    meta/frictions/registry.py: bee1496c70bb4fe81eb492b28decffa5d4a21dc9eb2205d0dfd449ac3338bdc6
+    meta/frictions/settlement.py: 9f75fe6fcb2766d9fe08e9c9451c135e0a3dcd3ac72f2ab0bae91a9074c87f60
+    meta/frictions/spread.py: 6a57b2baf58c363558dd50f7377ad8069c3cff3bf9194aedb80ac8f14c052fc3
+    meta/policies/eiie_extractor.py: 64d7b06b56fd74a491e67879bb3b5bba7361c8e20caec21f388dbce50a8c58ac
+    tools/assert_campaign_checkout.sh: c824b8c61f2aeacb160b4da9d42a929795200ae05001f053f0d2c615a320c411
+    tools/campaign_protocol.py: 5202bdf5a5aaa712636d3d2558116708cb5a8fcb065757704e409852998efa95
+    tools/rf_series.py: 9849fcad83820ff5a3e8ff5350884d21d393751559d1eadb61a23f15689c1689
+    tools/run_hparam_tuning.py: 2f178cdeded3e172119c5238d9be47181e5b6a8dbdf5d03ac38dcb2bc8111912
+    tools/slurm_stage1_calibration.sbatch: db0d8ad9045f752d08c37429af0004595b48557e067c3927a850bd23ea43e12d
+    tools/stage1_calibration_protocol.py: ac6243a96025733b7d41d90f4408a044133aaacb6078404af6d74b0ca107ca4d
+    tools/submit_stage1_calibration.sh: 23e783c52eae00186f88f3ed74b0178d2eb662aed294bffe88eb47ee2192eadf
+  study_name: ppo_mlp__nyse
+  target_n_trials: 20
+  timesteps_per_trial: 100000
+  trial_number: 10
+  trial_seeds:
+  - 1412773532
+  - 324543597
+  - 1852380033
+  tuning_friction: F3

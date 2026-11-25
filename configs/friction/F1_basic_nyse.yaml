@@ -1,0 +1,19 @@
+# F1 (NYSE): + market-profile fees, spread haircut, next-day execution.
+# ``fees`` resolves through the NYSE market profile; no impact-model family
+# cost is active here yet. F2 swaps in square-root impact.
+friction:
+  level: F1
+  cost_buffer_pct: 0.002   # NYSE fees ~3 bps + spread ~5 bps; small buffer
+  impact_model:
+    name: baseline
+    basis_points: 0
+  max_trade_volume_pct: 1.0
+  layers:
+    - name: execution_timing
+    - name: fees
+      params:
+        commission_bps: 0.0
+    - name: spread
+      params:
+        spread_floor: 0.0005
+        flat_spread: 0.0004

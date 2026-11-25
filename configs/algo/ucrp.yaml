@@ -1,0 +1,3 @@
+algo:
+  name: ucrp
+  kind: non_rl
