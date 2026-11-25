@@ -1,0 +1,81 @@
+# Experiment grid of the CIFEr 2027 paper.
+#
+# A cell is (market, strategy, friction level, seed). tools/run_cell.py runs one
+# cell; tools/run_grid.py runs many. The order of the expanded grid is fixed:
+# groups in the order below, then market, strategy, friction, seed, in the order
+# of the lists. A cluster array index refers to this order (docs/runner.md).
+#
+# Configuration layers for a cell, merged left to right (later keys win):
+#   markets.<m>.base  ->  markets.<m>.friction.<F>  ->  strategies.<s>.algo
+#   ->  strategies.<s>.tuned (with {market} replaced)
+# Then strategies.<s>.params.<m>, if present, replaces algo.params completely.
+name: cifer2027
+
+markets:
+  nyse:
+    base: configs/base/nyse_adjusted.yaml
+    friction:
+      F0: configs/friction/F0_bare.yaml
+      F1: configs/friction/F1_basic_nyse.yaml
+      F2: configs/friction/F2_liquidity_nyse.yaml
+      F3: configs/friction/F3_structural_nyse.yaml
+  pse:
+    base: configs/base/pse_adjusted_pseedge.yaml
+    friction:
+      F0: configs/friction/F0_bare.yaml
+      F1: configs/friction/F1_basic_pse.yaml
+      F2: configs/friction/F2_liquidity_pse.yaml
+      F3: configs/friction/F3_structural_pse.yaml
+
+strategies:
+  # Primary non-RL comparators (fixed default parameters).
+  ubah:        {algo: configs/algo/ubah.yaml}
+  ucrp:        {algo: configs/algo/ucrp.yaml}
+  markowitz:   {algo: configs/algo/markowitz.yaml}
+  hrp:         {algo: configs/algo/hrp.yaml}
+  erc:         {algo: configs/algo/erc.yaml}
+  zscore:      {algo: configs/algo/zscore.yaml}
+  macd:        {algo: configs/algo/macd.yaml}
+  csm_lo:      {algo: configs/algo/csm_lo.yaml}
+  # Secondary cadence control: UCRP rebalanced monthly.
+  ucrp_monthly: {algo: configs/algo/ucrp_monthly.yaml}
+  # Signal rules with parameters selected on the 2018-2019 validation split
+  # (maximum F3 risk-free-adjusted Sharpe over a frozen grid of 24 values each).
+  zscore_tuned:
+    algo: configs/algo/zscore.yaml
+    params:
+      nyse: {lookback: 180, threshold: 1.0}
+      pse: {lookback: 252, threshold: 2.0}
+  macd_tuned:
+    algo: configs/algo/macd.yaml
+    params:
+      nyse: {fast: 6, slow: 40, signal: 5}
+      pse: {fast: 18, slow: 60, signal: 9}
+  # RL configurations: hyperparameters selected under F3, then trained from the
+  # start at each friction level with 21 seeds.
+  ppo_mlp:  {algo: configs/algo/ppo_mlp.yaml,  tuned: "configs/tuned_stage1/ppo_mlp__{market}.yaml"}
+  ppo_eiie: {algo: configs/algo/ppo_eiie.yaml, tuned: "configs/tuned_stage1/ppo_eiie__{market}.yaml"}
+  sac:      {algo: configs/algo/sac.yaml,      tuned: "configs/tuned_stage1/sac__{market}.yaml"}
+  td3:      {algo: configs/algo/td3.yaml,      tuned: "configs/tuned_stage1/td3__{market}.yaml"}
+
+groups:
+  - name: non_rl
+    markets: [nyse, pse]
+    strategies: [ubah, ucrp, markowitz, hrp, erc, zscore, macd, csm_lo]
+    frictions: [F0, F1, F2, F3]
+    seeds: [1]
+  - name: cadence_control
+    markets: [nyse, pse]
+    strategies: [ucrp_monthly]
+    frictions: [F0, F1, F2, F3]
+    seeds: [1]
+  - name: signal_tuned
+    markets: [nyse, pse]
+    strategies: [zscore_tuned, macd_tuned]
+    frictions: [F3]
+    seeds: [1]
+  - name: rl
+    markets: [nyse, pse]
+    strategies: [ppo_mlp, ppo_eiie, sac, td3]
+    frictions: [F0, F1, F2, F3]
+    seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
