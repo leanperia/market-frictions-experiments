@@ -154,7 +154,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     todo = [(i, c) for i, c in selected if args.force or not is_done(c, args)]
     print(f"[grid] {len(selected)} cells selected, {len(selected) - len(todo)} already done, "
-          f"{len(todo)} to run with {args.workers} worker(s)")
+          f"{len(todo)} to run with {args.workers} worker(s)", flush=True)
     env = cell_environment(args.threads_per_cell)
     failures = []
     with ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:

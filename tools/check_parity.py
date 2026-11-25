@@ -36,6 +36,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
+import numpy as np
 import pandas as pd
 import yaml
 
@@ -139,8 +140,11 @@ def compare_paths(ours: Path, ref: Path) -> Optional[Dict[str, Any]]:
         if col == "date":
             continue
         if pd.api.types.is_numeric_dtype(a[col]) and pd.api.types.is_numeric_dtype(b[col]):
-            diff = float((a[col].astype(float) - b[col].astype(float)).abs().max())
-            if diff != 0.0:
+            x = a[col].to_numpy(dtype=float)
+            y = b[col].to_numpy(dtype=float)
+            same = (x == y) | (np.isnan(x) & np.isnan(y))  # empty columns read as NaN
+            if not same.all():
+                diff = float(np.nanmax(np.abs(x[~same] - y[~same])))
                 differing.append({"column": col, "max_abs_diff": diff})
         elif not a[col].fillna("").astype(str).equals(b[col].fillna("").astype(str)):
             differing.append({"column": col})
